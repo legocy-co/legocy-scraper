@@ -17,6 +17,11 @@ def add_to_legocy(set_information: list):
                 break
 
         if set_id is not None:
+            try:
+                int(set_info['set_id'])
+            except ValueError:
+                continue
+
             request_data = {
                 "n_pieces": set_info['set_pieces'],
                 "name": set_info['set_title'],
