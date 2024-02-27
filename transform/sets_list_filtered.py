@@ -32,7 +32,7 @@ def get_theme_pieces_by_name(theme: str) -> int:
     return 100
 
 
-def download_photos(lego_sets: list, headers) -> list:
+def filter_sets(lego_sets: list, headers) -> list:
 
     error_requests = 0
     error_parsing = 0
