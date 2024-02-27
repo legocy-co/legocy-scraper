@@ -2,7 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def download_photos(lego_sets: list, headers):
+def download_photos(lego_sets: list, headers) -> list:
+    lego_sets_information = []
+
     for lego_set_info in lego_sets:
         r = requests.get(f"https://{lego_set_info['href']}", headers=headers)
 
@@ -26,6 +28,15 @@ def download_photos(lego_sets: list, headers):
                             "set_pieces": lego.find_all("td")[3].text,
                             "set_year": lego.find_all("td")[6].text[-4:]
                         }
-                        print(lego_info)
+                        lego_sets_information.append(lego_info)
+
                 except ValueError:
+                    invalid_set = {
+                        "set_link": f"https://{lego_set_info['href']}",
+                        "set_title": lego.find_all("td")[2].text
+                    }
+
+                    print(invalid_set)
                     continue
+
+    return lego_sets_information

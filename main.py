@@ -1,3 +1,4 @@
+from functions.add_to_legocy import add_to_legocy
 from functions.retrieve_set_info import download_photos
 from functions.retireve_links import retrieve_links
 
@@ -8,4 +9,5 @@ headers = {
 
 if __name__ == '__main__':
     list_of_sets = retrieve_links(headers)
-    download_photos(list_of_sets, headers)
+    set_information = download_photos(list_of_sets, headers)
+    add_to_legocy(set_information, headers)
