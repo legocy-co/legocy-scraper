@@ -10,4 +10,4 @@ headers = {
 if __name__ == '__main__':
     list_of_sets = retrieve_links(headers)
     set_information = download_photos(list_of_sets, headers)
-    add_to_legocy(set_information, headers)
+    add_to_legocy(set_information)

@@ -13,7 +13,6 @@ def download_photos(lego_sets: list, headers) -> list:
             continue
 
         soup = BeautifulSoup(r.text, 'html.parser')
-
         tables = soup.find_all("table", {"class": "themetable sortable"})
         for table in tables:
             lego_set = table.find_all("tr", {"class": "lua-brick-table-row"})
@@ -22,21 +21,33 @@ def download_photos(lego_sets: list, headers) -> list:
 
                 try:
                     if int(lego.find_all("td")[3].text) >= 30:
+
+                        theme = soup.find("span", {"class": "mw-page-title-main"}).text
+
+                        if theme.endswith(" (Theme)"):
+                            theme = theme[:-8]
+                        if theme == "LEGO Ideas":
+                            theme = "Ideas"
+                        if theme == "Marvel":
+                            theme = "Marvel Super Heroes"
+                        if theme == "LEGO Dimensions":
+                            theme = "Dimensions"
+
                         lego_info = {
                             "set_title": lego.find_all("td")[2].text,
+                            "set_id": lego.find_all("td")[1].text,
+                            "set_theme": theme,
                             "set_image": lego.find("a").get("href"),
                             "set_pieces": lego.find_all("td")[3].text,
                             "set_year": lego.find_all("td")[6].text[-4:]
                         }
                         lego_sets_information.append(lego_info)
-
                 except ValueError:
                     invalid_set = {
-                        "set_link": f"https://{lego_set_info['href']}",
+                        "invalid_set_link": f"https://{lego_set_info['href']}",
                         "set_title": lego.find_all("td")[2].text
                     }
 
                     print(invalid_set)
                     continue
-
     return lego_sets_information
