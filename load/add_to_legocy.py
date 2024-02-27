@@ -25,8 +25,5 @@ def add_to_legocy(set_information: list):
             }
             request_data_list.append(request_data)
 
-        else:
-            print(f"Set theme '{set_theme}' does not exist in LEGOcy themes list")
-
     with open('request_data.json', 'w') as output_file:
         json.dump(request_data_list, output_file, indent=4)

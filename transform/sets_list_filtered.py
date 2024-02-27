@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 
 
 def get_theme_pieces_by_name(theme: str) -> int:
-
     popular_themes = (
         "DC SuperHeroes",
         "Architecture",
@@ -23,7 +22,7 @@ def get_theme_pieces_by_name(theme: str) -> int:
         "Technic",
         "The Hobbit",
         "The LEGO Batman Movie",
-        "Harry Potter",
+        "Harry Potter"
     )
 
     if theme in popular_themes:
@@ -33,9 +32,11 @@ def get_theme_pieces_by_name(theme: str) -> int:
 
 
 def filter_sets(lego_sets: list, headers) -> list:
-
     error_requests = 0
     error_parsing = 0
+
+    invalid_set_errors = []
+    not_enough_pieces = []
 
     lego_sets_information = []
 
@@ -57,7 +58,7 @@ def filter_sets(lego_sets: list, headers) -> list:
                 try:
                     theme = soup.find("span", {"class": "mw-page-title-main"}).text
                     if theme.endswith(" (Theme)"):
-                            theme = theme[:-8]
+                        theme = theme[:-8]
                     if theme == "LEGO Ideas":
                         theme = "Ideas"
                     if theme == "Marvel":
@@ -66,13 +67,14 @@ def filter_sets(lego_sets: list, headers) -> list:
                         theme = "Dimensions"
 
                     set_pieces = int(lego.find_all("td")[3].text)
-                    
+
                     theme_min_pieces = get_theme_pieces_by_name(theme)
-                    
+
                     if set_pieces < theme_min_pieces:
-                        print(f"Not enough pieces for theme {theme}. Want {theme_min_pieces} have {set_pieces}")
+                        not_enough_pieces.append(
+                            f"Not enough pieces for set {lego.find_all('td')[2].text} from theme {theme}. Want {theme_min_pieces} have {set_pieces}")
                         continue
-                        
+
                     lego_info = {
                         "set_title": lego.find_all("td")[2].text,
                         "set_id": lego.find_all("td")[1].text,
@@ -82,16 +84,25 @@ def filter_sets(lego_sets: list, headers) -> list:
                         "set_year": lego.find_all("td")[6].text[-4:]
                     }
                     lego_sets_information.append(lego_info)
-                
+
                 except ValueError:
                     invalid_set = {
                         "invalid_set_link": f"https://{lego_set_info['href']}",
                         "set_title": lego.find_all("td")[2].text
                     }
 
-                    print(invalid_set)
+                    invalid_set_errors.append(
+                        f"Invalid set: {invalid_set['invalid_set_link']}. Set Title: {invalid_set['set_title']}")
                     error_parsing += 1
                     continue
+
+    with open('errors/invalid_set_errors.txt', 'w') as output_file:
+        for error in invalid_set_errors:
+            output_file.write(error + "\n")
+
+    with open('errors/not_enough_pieces_errors.txt', 'w') as output_file:
+        for error in not_enough_pieces:
+            output_file.write(error + "\n")
 
     print(f"Errors Count: {error_requests} requests, {error_parsing} parsing")
 
