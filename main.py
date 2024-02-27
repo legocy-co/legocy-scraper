@@ -1,6 +1,6 @@
-from functions.add_to_legocy import add_to_legocy
-from functions.retrieve_set_info import download_photos
-from functions.retireve_links import retrieve_links
+from load.add_to_legocy import add_to_legocy
+from transform.sets_list_filtered import download_photos
+from extract.sets_list_raw import retrieve_links
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
