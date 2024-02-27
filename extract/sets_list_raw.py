@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def retrieve_links(headers) -> []:
+def retrieve_links(headers) -> list[dict]:
     lego_sets_list = []
 
     url = f'https://brickipedia.fandom.com/wiki/LEGO_Wiki'
