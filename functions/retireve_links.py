@@ -4,54 +4,44 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def retrieve_links(headers, min_year) -> {}:
-    lego_dict = {}
+def retrieve_links(headers) -> []:
+    lego_sets_list = []
 
-    for year in range(min_year, datetime.now().year):
+    url = f'https://brickipedia.fandom.com/wiki/LEGO_Wiki'
 
-        lego_dict[year] = []
+    re = requests.get(url, headers=headers)
 
-        url = f'https://www.bricklink.com/catalogList.asp?q=&catType=S&catID=&itemYear={year}'
+    if re.status_code != 200:
+        print(f'Error: {re.status_code}')
+        return
 
-        re = requests.get(url, headers=headers)
+    soup = BeautifulSoup(re.text, 'html.parser')
+    lego_set_themes = soup.find_all("table", {"cellspacing": "8"})
 
-        if re.status_code != 200:
-            print(f'Error: {re.status_code}')
-            continue
+    if not lego_set_themes:
+        print("No lego sets found, please check code")
+        return
 
-        soup = BeautifulSoup(re.text, 'html.parser')
-        div_container = soup.find('table',
-                                  class_='bg-color--white catalog-list__body-main catalog-list__body-main--alternate-row')
-        if not div_container:
-            continue
+    for table in lego_set_themes:
+        for lego_sets in table.find_all("table", "characterportal"):
 
-        lego_sets = div_container.find_all("tr")
+            lego_set = lego_sets.select("div[style='position:relative; height: 90px; width: 100px;']")
 
-        for fv_element in lego_sets:
-            item_id_element = fv_element.find("a")
+            for div in lego_set:
 
-            if not item_id_element:
-                continue
+                link = div.find("div",
+                                style="position: absolute; top: 0px; left: 0px; font-size: 130px; overflow: hidden; line-height: 100px; z-index: 3")
+                a_tag = link.find("a")
 
-            general_info = fv_element.find_all("td")[2]
-            set_information = general_info.find("font")
+                if a_tag:
+                    href = a_tag.get("href")
+                    title = a_tag.get("title")
 
-            try:
-                part_count = int(set_information.text.split(",")[0][:-5])
-            except ValueError:
-                continue
+                    lego_info = {
+                        "title": title,
+                        "href": f"brickipedia.fandom.com{href}"
+                    }
 
-            if part_count <= 100:
-                continue
+                    lego_sets_list.append(lego_info)
 
-            sets = {
-                'item_id': item_id_element.text,
-                'url': f"https://www.bricklink.com{item_id_element.attrs['href']}"
-            }
-
-            lego_dict[year].append(sets)
-
-            print(f"Saving Lego Set ID: {sets['item_id']}...")
-
-    return lego_dict
-
+    return lego_sets_list
