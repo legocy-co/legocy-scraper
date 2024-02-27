@@ -20,6 +20,9 @@ def download_photos(lego_sets: list, headers) -> list:
             for lego in lego_set:
 
                 try:
+
+                    # TODO: Implement stricter criteria
+
                     if int(lego.find_all("td")[3].text) >= 30:
 
                         theme = soup.find("span", {"class": "mw-page-title-main"}).text
