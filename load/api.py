@@ -3,7 +3,7 @@ import time
 
 import requests
 
-bearer_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBnb29nbGUuY29tIiwicm9sZSI6MSwiZXhwIjoxNzA5MDcwMzEyfQ.zH-5Ja-MQLom6sG8ZMJ-90t_AJjC77xfMHF5SN4lMWA'
+bearer_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBnb29nbGUuY29tIiwicm9sZSI6MSwiZXhwIjoxNzA5MTIwNjgzfQ.zaEeRj0emvYG7PJB_MTL7ALWIgV-4GOdsO0jYk4_pFo'
 
 url = 'https://api.legocy.online/api/v1/admin/sets/'
 
@@ -15,7 +15,7 @@ sets_failed = []
 
 
 def read_data() -> list[dict]:
-    with open('../static/legocy_new_sets.json', 'r', encoding='utf-8') as file:
+    with open('../request_data.json', 'r', encoding='utf-8') as file:
         return json.loads(file.read())
 
 

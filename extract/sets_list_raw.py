@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import requests
 from bs4 import BeautifulSoup
 
@@ -44,4 +42,8 @@ def retrieve_links(headers) -> list[dict]:
 
                     lego_sets_list.append(lego_info)
 
+    lego_sets_list.append({
+            "title": "Super Heroes",
+            "href": "brickipedia.fandom.com/wiki/Super_Heroes"
+        })
     return lego_sets_list

@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 
+from functions.error_checking import error_check
+
 
 def get_theme_pieces_by_name(theme: str) -> int:
     popular_themes = (
@@ -50,6 +52,7 @@ def filter_sets(lego_sets: list, headers) -> list:
 
         soup = BeautifulSoup(r.text, 'html.parser')
         tables = soup.find_all("table", {"class": "themetable sortable"})
+
         for table in tables:
             lego_set = table.find_all("tr", {"class": "lua-brick-table-row"})
 
@@ -65,6 +68,8 @@ def filter_sets(lego_sets: list, headers) -> list:
                         theme = "Marvel Super Heroes"
                     if theme == "LEGO Dimensions":
                         theme = "Dimensions"
+                    if theme == "Super Heroes":
+                        theme = "DC Comics Super Heroes"
 
                     set_pieces = int(lego.find_all("td")[3].text)
 
@@ -96,13 +101,7 @@ def filter_sets(lego_sets: list, headers) -> list:
                     error_parsing += 1
                     continue
 
-    with open('errors/invalid_set_errors.txt', 'w') as output_file:
-        for error in invalid_set_errors:
-            output_file.write(error + "\n")
-
-    with open('errors/not_enough_pieces_errors.txt', 'w') as output_file:
-        for error in not_enough_pieces:
-            output_file.write(error + "\n")
+    error_check(invalid_set_errors, not_enough_pieces)
 
     print(f"Errors Count: {error_requests} requests, {error_parsing} parsing")
 

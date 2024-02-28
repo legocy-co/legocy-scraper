@@ -2,7 +2,7 @@ import json
 
 
 def add_to_legocy(set_information: list):
-    with open('theme_ids.json', 'r') as json_file:
+    with open('static/theme_ids.json', 'r') as json_file:
         themes_list = json.load(json_file)
 
     request_data_list = []
